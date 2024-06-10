@@ -12,26 +12,26 @@ pipeline {
         }
         stage('Build Docker image') {
             steps {
-                script {
-                    docker.build("${IMAGE_NAME}:${BUILD_NUMBER}") // Zbudowanie obrazu Dockerowego
-                    
-                }
+				sh 'docker build -t ${IMAGE_NAME}:${BUILD_NUMBER} .'
+                
             }
         }
-		stage('Push Dockers image') {
+		stage('Push Docker image') {
             steps {
-                script {
-                    docker.withRegistry('https://index.docker.io/v1/', DOCKER_CREDENTIALS) {
-                        docker.image("${IMAGE_NAME}:${BUILD_NUMBER}").push() // Wysłanie obrazu na DockerHuba
-                    }
+					withCredentials([usernamePassword(credentialsId: "${DOCKER_CREDENTIALS}", usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+						sh '''
+							echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+							docker push ${IMAGE_NAME}:${BUILD_NUMBER}
+							docker logout
+						'''
+					}
                 }
             }
 		}
 		stage('Delete docker image') {
             steps {
-                script {
-                    docker.rmi("${IMAGE_NAME}:${BUILD_NUMBER}")
-                }
+				sh 'docker image rm ${IMAGE_NAME}:${BUILD_NUMBER}'
+               
             }
 		}
     }
