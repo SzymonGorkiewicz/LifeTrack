@@ -1,13 +1,23 @@
-FROM python:3
+FROM node:18.19 as build
 
 WORKDIR /app
 
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+# Copy package.json and package-lock.json
+COPY package*.json ./
+
+# Install dependencies including Angular CLI
+RUN npm install
+RUN npx ngcc --properties es2023 browser module main --first-only --create-ivy-entry-points
 
 COPY . .
-RUN rm -rf Jenkinsfile Dockerfile .git
 
-EXPOSE 8000
+# Build the Angular app
+RUN npm run build
 
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+FROM nginx:stable
+
+# Copy built files to nginx's default directory
+COPY --from=build /app/dist/frontend/browser /usr/share/nginx/html
+
+EXPOSE 80
+
