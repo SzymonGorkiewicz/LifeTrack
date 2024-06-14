@@ -1,60 +1,60 @@
 from django.db import models
-from django.conf import settings
 from django.contrib.auth.models import User
-# Create your models here.
-
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 class Day(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    date = models.DateField(blank=False,null=False)
+    date = models.DateField(blank=False, null=False)
     total_protein = models.FloatField(default=0, blank=False, null=False)
     total_carbohydrates = models.FloatField(default=0, blank=False, null=False)
     total_fat = models.FloatField(default=0, blank=False, null=False)
-    products = models.ManyToManyField('Product', related_name='product')
-    
+
     def __str__(self):
-        return f"{self.user.username} - {self.date}"
-
-    def update_totals(self):
-        consumptions = self.consumption_set.all()
-        self.total_protein = sum(consumption.protein() for consumption in consumptions)
-        self.total_carbohydrates = sum(consumption.carbohydrates() for consumption in consumptions)
-        self.total_fat = sum(consumption.fat() for consumption in consumptions)
-        self.save()
-
-    def total_calories(self):
-        return (self.total_protein * 4) + (self.total_carbohydrates * 4) + (self.total_fat * 9)
+        return f"{self.id}"
+    
+    def create_default_meals(self):
+        Meal.objects.bulk_create([
+            Meal(day=self, meal_type='breakfast'),
+            Meal(day=self, meal_type='second_breakfast'),
+            Meal(day=self, meal_type='lunch'),
+            Meal(day=self, meal_type='afternoon_snack'),
+            Meal(day=self, meal_type='dinner'),
+        ])
+    
+    class Meta:
+        unique_together = [['user', 'date']]
 
 class Product(models.Model):
     name = models.CharField(max_length=50, null=False, unique=True, blank=False)
-    proteinPer100g = models.FloatField(blank=False,null=False)
-    carbohydratesPer100g = models.FloatField(blank=False,null=False)
-    fatPer100g = models.FloatField(blank=False,null=False)
-    
+    protein_per_100g = models.FloatField(blank=False, null=False)
+    carbohydrates_per_100g = models.FloatField(blank=False, null=False)
+    fat_per_100g = models.FloatField(blank=False, null=False)
+    calories_per_100g = models.FloatField(blank=False, null=False)
 
     def __str__(self):
         return self.name
 
-    def calories_per_100g(self):
-        return (self.protein_per_100g * 4) + (self.carbohydrates_per_100g * 4) + (self.fat_per_100g * 9)
 
+class Meal(models.Model):
+    MEAL_CHOICES = [
+        ('breakfast', 'breakfast'),
+        ('second_breakfast', 'second_breakfast'),
+        ('lunch', 'lunch'),
+        ('afternoon_snack', 'afternoon_snack'),
+        ('dinner', 'dinner'),
+    ]
 
-class Consumption(models.Model):
     day = models.ForeignKey(Day, on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    amount_in_grams = models.FloatField(blank=False, null=False)
+    meal_type = models.CharField(max_length=20, choices=MEAL_CHOICES, blank=False, null=False)
+    products = models.ManyToManyField(Product)
 
     def __str__(self):
-        return f"{self.product.name} on {self.day.date}"
+        return f"{self.meal_type}"
 
-    def calories(self):
-        return (self.product.calories_per_100g() * self.amount_in_grams) / 100
 
-    def protein(self):
-        return (self.product.protein_per_100g * self.amount_in_grams) / 100
 
-    def carbohydrates(self):
-        return (self.product.carbohydrates_per_100g * self.amount_in_grams) / 100
-
-    def fat(self):
-        return (self.product.fat_per_100g * self.amount_in_grams) / 100
+@receiver(post_save, sender=Day)
+def create_default_meals(sender, instance, created, **kwargs):
+    if created:
+        instance.create_default_meals()

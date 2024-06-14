@@ -24,9 +24,10 @@ def get_or_create_product(product_name):
             api_product = api_data[0]  # Zakładamy, że dane są w pierwszym elemencie listy
             product = Product.objects.create(
                 name=api_product['name'],
-                proteinPer100g=api_product['protein_g'],
-                carbohydratesPer100g=api_product['carbohydrates_total_g'],
-                fatPer100g=api_product['fat_total_g'],
+                protein_per_100g=api_product['protein_g'],
+                carbohydrates_per_100g=api_product['carbohydrates_total_g'],
+                fat_per_100g=api_product['fat_total_g'],
+                calories_per_100g=api_product['calories']
             )
             print("api")
             return product

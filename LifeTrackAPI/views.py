@@ -3,7 +3,9 @@ from rest_framework import status
 from rest_framework.views import APIView
 from .services import get_or_create_product
 from rest_framework.response import Response
-from .serializers import ProductSerializer
+from .serializers import ProductSerializer, DaySerializer
+from .models import Product, Day
+from django.shortcuts import get_object_or_404
 # Create your views here.
 
 class ProductView(APIView):
@@ -24,5 +26,12 @@ class ProductView(APIView):
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
 class DayView(APIView):
-    def get(self,request):
-        pass
+    def get(self,request,id,format=None):
+    
+        day_id = get_object_or_404(Day,id=id)
+        print(day_id)
+        
+        serializedday=DaySerializer(day_id)
+        return Response(serializedday.data, status=status.HTTP_200_OK)
+        
+        
