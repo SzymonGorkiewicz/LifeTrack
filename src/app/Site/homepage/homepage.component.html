@@ -1,14 +1,26 @@
-<p>homepage works!</p>
+<h1>LifeTrack</h1>
 <button (click)="Logout()">Logout</button>
-<div *ngFor="let day of days">
-    <div class="day-container">
-      <h3>Date: {{ day.date }}</h3>
-      <ul>
-        <li *ngFor="let meal of day.meals">{{ meal }}</li>
-      </ul>
+<div class="days-container">
+    <div *ngFor="let day of days" class="day-wrapper">
+        <div 
+            (click)="onDayClick(day.id)" 
+            [class.clicked]="clickedDayId === day.id"
+            class="day-button"
+        >
+            <p>{{ day.date | date: 'd MMMM' }}</p>
+        </div>
     </div>
-  </div>
-  
-  <div *ngIf="days.length === 0">
+</div>
+<div *ngIf="days.length === 0">
     <p>No days available.</p>
-  </div>
+</div>
+
+<div *ngIf="meals.length > 0">
+  <h2>Meals for the selected day:</h2>
+  <ul>
+    <li *ngFor="let meal of meals">{{ meal.meal_type }}{{meal.id}}</li>
+  </ul>
+</div>
+<div *ngIf="meals.length === 0">
+  <p>No meals available for the selected day.</p>
+</div>

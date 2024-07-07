@@ -11,9 +11,12 @@ import { SiteService } from '../../Services/site.service';
 export class HomepageComponent {
   constructor(private authservice: AuthService,private router: Router,private site: SiteService){}
   days:any[] = [];
+  meals: any[] = [];
+  clickedDayId: number | null = null;
+
   ngOnInit(){
-    console.log("skibidi");
-    this.getDays();
+    this.getDaysForHomePage();
+    
   }
 
 
@@ -32,16 +35,40 @@ export class HomepageComponent {
     })
   }
 
-  getDays(){
-    this.site.getWeek().subscribe((data:any) =>{
-      this.days = data
-      console.log(this.days);
-     
+  getDaysForHomePage(){
+    this.site.getDays().subscribe((data:any) =>{
+      this.days = data;
+      this.setDefaultClickedDayId();
+      
       
       
     },(error:any)=>{
       console.error(error);
       
     })
+  }
+
+  setDefaultClickedDayId() {
+    const today = new Date().toISOString().split('T')[0]; 
+    const todayDay = this.days.find(day => day.date === today);
+    
+    if (todayDay) {
+      this.clickedDayId = todayDay.id;
+    }
+    this.getMealsForDay(todayDay.id);
+  }
+
+  onDayClick(id:number){
+    this.clickedDayId = id;
+    this.getMealsForDay(id);
+  }
+  
+  getMealsForDay(dayId: number) {
+    this.site.getMealsForDay(dayId).subscribe((data: any) => {
+        this.meals = data;
+        console.log(data)
+      },(error:any)=>{
+        console.error(error);
+      })
   }
 }
