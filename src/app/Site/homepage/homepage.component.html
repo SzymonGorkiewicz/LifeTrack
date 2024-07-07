@@ -1,0 +1,14 @@
+<p>homepage works!</p>
+<button (click)="Logout()">Logout</button>
+<div *ngFor="let day of days">
+    <div class="day-container">
+      <h3>Date: {{ day.date }}</h3>
+      <ul>
+        <li *ngFor="let meal of day.meals">{{ meal }}</li>
+      </ul>
+    </div>
+  </div>
+  
+  <div *ngIf="days.length === 0">
+    <p>No days available.</p>
+  </div>

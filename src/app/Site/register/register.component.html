@@ -1,0 +1,27 @@
+<form id="login-form" class="form" (ngSubmit)="onSubmit(form)" #form="ngForm">
+    <div>
+        <label for="firstname">First Name:</label>
+        <input type="text" ngModel  name="firstname" id="firstname" class="form-control" required>
+      </div>
+      <div>
+        <label for="lastname">Last Name:</label>
+        <input type="text" ngModel  name="lastname" id="lastname"  required>
+      </div>
+      <div>
+        <label for="email">E-mail:</label>
+        <input type="email" ngModel  name="email" id="email" class="form-control" required>
+      </div>
+    <div>
+      <label for="username">Username:</label>
+      <input type="text" ngModel  name="username" id="username" class="form-control" required>
+    </div>
+    <div>
+      <label for="password">Password:</label>
+      <input type="password" ngModel  name="password" id="password"  required>
+    </div>
+    <a href="login">Already have account?</a>
+    <button type="submit">Register</button>
+  </form>
+  <div *ngIf="errorMessage">{{ errorMessage }}</div>
+  
+  
