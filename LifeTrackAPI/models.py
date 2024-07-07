@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
@@ -58,3 +59,11 @@ class Meal(models.Model):
 def create_default_meals(sender, instance, created, **kwargs):
     if created:
         instance.create_default_meals()
+
+@receiver(post_save, sender=User)
+def create_initial_days(sender, instance, created, **kwargs):
+    if created:
+        today = datetime.today().date()
+        for i in range(-6, 8):
+            day_date = today + timedelta(days=i)
+            Day.objects.create(user=instance, date=day_date)

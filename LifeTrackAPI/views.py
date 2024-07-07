@@ -54,10 +54,10 @@ class WeekView(APIView):
     def get(self, request):
         user = request.user
         today = datetime.today().date()
-        days = Day.objects.filter(user=user, date__range=[today - timedelta(days=7), today])
+        days = Day.objects.filter(user=user, date__range=[today - timedelta(days=7), today+timedelta(days=7)])
         
         if not days.exists():
-                    return Response([], status=status.HTTP_200_OK)
+            return Response([], status=status.HTTP_200_OK)
         
         serialized_days = DaySerializer(days, many=True)
         return Response(serialized_days.data, status=status.HTTP_200_OK)
@@ -73,3 +73,9 @@ class AddProductToMealView(APIView):
 
         serialized_meal = MealSerializer(meal)
         return Response(serialized_meal.data, status=status.HTTP_200_OK)
+    
+class Meals(APIView):
+    def get(self,request,day_id):
+        meals = Meal.objects.filter(day_id=day_id)
+        serialized_meals = MealSerializer(meals, many=True)
+        return Response(serialized_meals.data, status=status.HTTP_200_OK)
