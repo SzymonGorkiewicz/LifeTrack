@@ -3,9 +3,10 @@ from rest_framework import status
 from rest_framework.views import APIView
 from .services import get_or_create_product
 from rest_framework.response import Response
-from .serializers import ProductSerializer, DaySerializer
-from .models import Product, Day
+from .serializers import ProductSerializer, DaySerializer, MealSerializer
+from .models import Product, Day, Meal
 from django.shortcuts import get_object_or_404
+from datetime import datetime, timedelta
 # Create your views here.
 
 class ProductView(APIView):
@@ -34,4 +35,41 @@ class DayView(APIView):
         serializedday=DaySerializer(day_id)
         return Response(serializedday.data, status=status.HTTP_200_OK)
         
+class WeekView(APIView):
+    def post(self, request):
+        user = request.user
+        today = datetime.today().date()
+        days = []
+
+        for i in range(-7, 8):
+            date = today + timedelta(days=i)
+            day, created = Day.objects.get_or_create(user=user, date=date)
+            if created:
+                day.create_default_meals()
+            days.append(day)
+
+        serialized_days = DaySerializer(days, many=True)
+        return Response(serialized_days.data, status=status.HTTP_201_CREATED)
+    
+    def get(self, request):
+        user = request.user
+        today = datetime.today().date()
+        days = Day.objects.filter(user=user, date__range=[today - timedelta(days=7), today])
         
+        if not days.exists():
+                    return Response([], status=status.HTTP_200_OK)
+        
+        serialized_days = DaySerializer(days, many=True)
+        return Response(serialized_days.data, status=status.HTTP_200_OK)
+    
+class AddProductToMealView(APIView):
+    def post(self, request, meal_id):
+        meal = get_object_or_404(Meal, id=meal_id)
+        product_id = request.data.get('product_id')
+        product = get_object_or_404(Product, id=product_id)
+
+        meal.products.add(product)
+        meal.save()
+
+        serialized_meal = MealSerializer(meal)
+        return Response(serialized_meal.data, status=status.HTTP_200_OK)

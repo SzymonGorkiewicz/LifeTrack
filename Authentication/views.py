@@ -11,7 +11,7 @@ from django.shortcuts import get_object_or_404
 
 
 class Register(APIView):
-
+    permission_classes=()
     def post(self, request):
         user_serializer = UserSerializer(data=request.data)
         if user_serializer.is_valid():
