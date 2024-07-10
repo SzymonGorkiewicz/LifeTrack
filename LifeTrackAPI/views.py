@@ -143,3 +143,8 @@ class SaveGramatureView(APIView):
         meal_products = MealProduct.objects.filter(meal_id=meal_id)
         meal_products_serialized = MealProductsSerializer(meal_products, many=True)
         return Response(meal_products_serialized.data)
+    
+    def delete(self, request,product_id, meal_id):
+        meal_product = get_object_or_404(MealProduct, meal_id=meal_id, product_id=product_id)
+        meal_product.delete()
+        return Response({'message': 'deleted successfully'})
