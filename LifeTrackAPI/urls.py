@@ -1,6 +1,6 @@
 
 from django.urls import path
-from .views import ProductView, DayView, WeekView, AddProductToMealView, Meals, MealProducts, AddProductView, SaveGramatureView
+from .views import ProductView, DayView, WeekView, AddProductToMealView, Meals, MealProducts, AddProductView, SaveGramatureView, GraphsView
 urlpatterns = [
     path('product/<str:product_name>/', ProductView.as_view()),
     path('product/<str:product_name>/<int:mealID>/', AddProductView.as_view()),
@@ -10,6 +10,7 @@ urlpatterns = [
     path('meals/<int:day_id>/', Meals.as_view()),
     path('meals/<int:meal_id>/products/', MealProducts.as_view()),
     path('meal/<int:product_id>/<int:meal_id>/', SaveGramatureView.as_view()),
+    path('graphs/<int:user_id>/', GraphsView.as_view()),
     
 
 ]

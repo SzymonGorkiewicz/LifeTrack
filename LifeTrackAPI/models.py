@@ -64,6 +64,17 @@ class MealProduct(models.Model):
     def __str__(self):
         return f"{self.product.name} - {self.gramature}g"
 
+
+class BodyStats(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    weight = models.FloatField(max_length=5, blank=False, null=False)
+    chest_circ = models.FloatField(max_length=5, blank=False, null=False)
+    waist_circ = models.FloatField(max_length=5, blank=False, null=False)
+    date = models.DateField(blank=False, null=False)
+
+    def __str__(self):
+        return f"{self.user} - {self.date}"
+    
 @receiver(post_save, sender=Day)
 def create_default_meals(sender, instance, created, **kwargs):
     if created:
@@ -76,3 +87,4 @@ def create_initial_days(sender, instance, created, **kwargs):
         for i in range(-6, 8):
             day_date = today + timedelta(days=i)
             Day.objects.create(user=instance, date=day_date)
+

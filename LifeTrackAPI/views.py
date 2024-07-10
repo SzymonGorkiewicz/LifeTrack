@@ -3,8 +3,8 @@ from rest_framework import status
 from rest_framework.views import APIView
 from .services import get_or_create_product
 from rest_framework.response import Response
-from .serializers import ProductSerializer, DaySerializer, MealSerializer, MealProductsSerializer
-from .models import Product, Day, Meal, MealProduct
+from .serializers import ProductSerializer, DaySerializer, MealSerializer, MealProductsSerializer, BodyStatsSerializer
+from .models import Product, Day, Meal, MealProduct, BodyStats
 from django.shortcuts import get_object_or_404
 from datetime import datetime, timedelta
 from django.http import Http404
@@ -148,3 +148,9 @@ class SaveGramatureView(APIView):
         meal_product = get_object_or_404(MealProduct, meal_id=meal_id, product_id=product_id)
         meal_product.delete()
         return Response({'message': 'deleted successfully'})
+    
+class GraphsView(APIView):
+    def get(self,request,user_id):
+        stats = BodyStats.objects.filter(user_id=user_id).order_by('date')
+        stats_serialized = BodyStatsSerializer(stats, many=True)
+        return Response(stats_serialized.data)
