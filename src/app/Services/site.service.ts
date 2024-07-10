@@ -30,4 +30,45 @@ export class SiteService {
 
     return this.http.get(`${this.api_url}meals/${dayId}/`,{headers});
   }
+
+  getProductsForMeal(mealId: number){
+    let user = this.auth.getUser();
+
+    const headers = new HttpHeaders({
+      'Authorization': `Token ${user.token}`
+    });
+
+    return this.http.get(`${this.api_url}meals/${mealId}/products`,{headers});
+
+  }
+
+  AddProductForMeal(product_name:string, mealID:number){
+    let user = this.auth.getUser();
+
+    const headers = new HttpHeaders({
+      'Authorization': `Token ${user.token}`
+    });
+
+    return this.http.post(`${this.api_url}product/${product_name}/${mealID}/`,null,{headers});
+  }
+
+  saveGramature(product_id: number, gramature: number, mealID: number){
+    let user = this.auth.getUser();
+    
+    const headers = new HttpHeaders({
+      'Authorization': `Token ${user.token}`
+    });
+
+    return this.http.post(`${this.api_url}meal/${product_id}/${mealID}/`,{gramature},{headers});
+  }
+
+  getGramature(product_id: number, mealID: number){
+    let user = this.auth.getUser();
+    
+    const headers = new HttpHeaders({
+      'Authorization': `Token ${user.token}`
+    });
+
+    return this.http.get(`${this.api_url}meal/${product_id}/${mealID}/`,{headers});
+  }
 }
