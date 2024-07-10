@@ -19,7 +19,7 @@
   <h2>Meals for the selected day:</h2>
   <ul class="meal-list">
     <div 
-      (click)="onMealClick(meal.id); meal.clicked = !meal.clicked" 
+      (click)="toggleMealClick(meal.id); meal.clicked = !meal.clicked" 
       [class.clicked]="clickedMeal === meal.id"
       class="meal-item" 
       *ngFor="let meal of meals"
@@ -34,15 +34,20 @@
 
 
 <h2>Products for the selected meal:</h2>
-<button (click)="AddProductToMeal(productInput.value, clickedMeal)">Add</button>
-<input type="text" id="addproduct" #productInput>
-<ul>
+<ul *ngIf="mealClicked == true">
+  <button (click)="AddProductToMeal(productInput.value, clickedMeal)">Add</button>
+  <input type="text" id="addproduct" #productInput>
   <div *ngFor="let product of mergedList; let i = index;" >
     {{product.id}} - {{ product.name }} Protein: {{ (product.protein_per_100g * product.gramature / 100) | number:'1.2-2'}}  Carbohydrates: {{ (product.carbohydrates_per_100g * product.gramature / 100) | number:'1.2-2' }}  Fat: {{ (product.fat_per_100g * product.gramature / 100) | number:'1.2-2'}} Calories: {{ (product.calories_per_100g * product.gramature / 100)| number:'1.2-2'}}
     <p>Gramature:<input type="number" [(ngModel)]="product.gramature"  (change)="saveGramature(product.id, product.gramature, clickedMeal)"></p>
+    <button (click)="DeleteProductFromMeal(product.id, clickedMeal)">Delete</button>
+  </div>
+  <div><p>Total:  Protein: {{ calculateTotalNutrients().protein | number:'1.2-2' }},
+    Carbohydrates: {{ calculateTotalNutrients().carbohydrates | number:'1.2-2' }},
+    Fat: {{ calculateTotalNutrients().fat | number:'1.2-2' }},
+    Calories: {{ calculateTotalNutrients().calories | number:'1.2-2' }}</p>
   </div>
 </ul>
-
 <div *ngIf="!mergedList || mergedList.length === 0">
   <p>No products available for the selected meal.</p>
 </div>

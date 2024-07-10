@@ -71,4 +71,14 @@ export class SiteService {
 
     return this.http.get(`${this.api_url}meal/${product_id}/${mealID}/`,{headers});
   }
+
+  deleteProductFromMeal(product_id: number, mealID: number){
+    let user = this.auth.getUser();
+    
+    const headers = new HttpHeaders({
+      'Authorization': `Token ${user.token}`
+    });
+
+    return this.http.delete(`${this.api_url}meal/${product_id}/${mealID}/`,{headers});
+  }
 }

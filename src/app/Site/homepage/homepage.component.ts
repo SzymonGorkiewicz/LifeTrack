@@ -20,7 +20,7 @@ export class HomepageComponent {
   clickedDayId: number | null = null;
   clickedMeal: number | null = null;
   productName:string = "";
-  
+  mealClicked: boolean = false;
   mergedList:any[]= [];
   ngOnInit(){
     this.getDaysForHomePage();
@@ -32,6 +32,8 @@ export class HomepageComponent {
     this.authservice.Logout().subscribe((data:any) =>{
       
       localStorage.removeItem('user');
+      localStorage.removeItem('clickedDayId');
+      localStorage.removeItem('clickedMealId');
      
       this.router.navigate(['login']).then(() => {
           location.reload();
@@ -56,34 +58,39 @@ export class HomepageComponent {
       this.clickedMeal = +storedMealId; 
       this.onMealClick(this.clickedMeal);
     }
+    this.mealClicked = true;
   }
 
   getDaysForHomePage(){
     this.site.getDays().subscribe((data:any) =>{
       this.days = data;
-      //this.setDefaultClickedDayId();
+      
     },(error:any)=>{
       console.error(error);
       
     })
   }
 
-  // setDefaultClickedDayId() {
-  //   const today = new Date().toISOString().split('T')[0]; 
-  //   const todayDay = this.days.find(day => day.date === today);
-    
-  //   if (todayDay) {
-  //     this.clickedDayId = todayDay.id;
-  //   }
-  //   this.getMealsForDay(todayDay.id);
-  // }
-
   onDayClick(id:number){
     this.clickedDayId = id;
     localStorage.setItem('clickedDayId', String(this.clickedDayId));
     this.getMealsForDay(id);
+    this.mealClicked = false;
   }
   
+  toggleMealClick(mealId: number) {
+    if (this.clickedMeal === mealId) {
+      this.clickedMeal = null; // Odkliknięcie posiłku
+      this.mealClicked = false;
+    } else {
+      this.clickedMeal = mealId; // Kliknięcie na posiłek
+      this.mealClicked = true;
+      this.onMealClick(this.clickedMeal);
+    }
+    localStorage.setItem('clickedMealId', String(this.clickedMeal));
+    
+  }
+
   getMealsForDay(dayId: number) {
     this.site.getMealsForDay(dayId).subscribe((data: any) => {
         this.meals = data;
@@ -113,10 +120,6 @@ export class HomepageComponent {
       }
     );
   }
-  
-
-
-  
 
   AddProductToMeal(productname: string, mealID:any){
     if (!mealID) {
@@ -152,9 +155,54 @@ export class HomepageComponent {
       }
       return { ...product, gramature: 100 }; 
   });
-    
-
   }
+
+  calculateTotalNutrients() {
+    if (!this.mergedList || this.mergedList.length === 0) {
+      return {
+        protein: 0,
+        carbohydrates: 0,
+        fat: 0,
+        calories: 0
+      };
+    }
   
+   
+    let totalProtein = 0;
+    let totalCarbohydrates = 0;
+    let totalFat = 0;
+    let totalCalories = 0;
   
+    
+    this.mergedList.forEach(product => {
+      totalProtein += (product.protein_per_100g * product.gramature / 100);
+      totalCarbohydrates += (product.carbohydrates_per_100g * product.gramature / 100);
+      totalFat += (product.fat_per_100g * product.gramature / 100);
+      totalCalories += (product.calories_per_100g * product.gramature / 100);
+    });
+  
+    // Zaokrąglenie wyników do 2 miejsc po przecinku
+    totalProtein = parseFloat(totalProtein.toFixed(2));
+    totalCarbohydrates = parseFloat(totalCarbohydrates.toFixed(2));
+    totalFat = parseFloat(totalFat.toFixed(2));
+    totalCalories = parseFloat(totalCalories.toFixed(2));
+  
+    return {
+      protein: totalProtein,
+      carbohydrates: totalCarbohydrates,
+      fat: totalFat,
+      calories: totalCalories
+    };
+  }
+
+  DeleteProductFromMeal(productid:number,mealid:number|null){
+    if (mealid){
+      this.site.deleteProductFromMeal(productid, mealid).subscribe((data: any) => {
+        location.reload()
+        
+      },(error:any)=>{
+        console.error(error);
+      })
+    }  
+  }
 }
