@@ -9,6 +9,8 @@ import { FormsModule } from '@angular/forms';
 import { RegisterComponent } from './Site/register/register.component';
 import { HomepageComponent } from './Site/homepage/homepage.component';
 import { NavbarComponent } from './Site/navbar/navbar.component';
+import { GraphsComponent } from './Site/graphs/graphs.component';
+import { SettingsComponent } from './Site/settings/settings.component';
 
 
 @NgModule({
@@ -18,6 +20,8 @@ import { NavbarComponent } from './Site/navbar/navbar.component';
     RegisterComponent,
     HomepageComponent,
     NavbarComponent,
+    GraphsComponent,
+    SettingsComponent,
   ],
   imports: [
     BrowserModule,

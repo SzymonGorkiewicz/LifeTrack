@@ -81,4 +81,14 @@ export class SiteService {
 
     return this.http.delete(`${this.api_url}meal/${product_id}/${mealID}/`,{headers});
   }
+
+  getUserBodyStats(user_id:number){
+    let user = this.auth.getUser();
+    
+    const headers = new HttpHeaders({
+      'Authorization': `Token ${user.token}`
+    });
+
+    return this.http.get(`${this.api_url}graphs/${user_id}/`,{headers});
+  }
 }
