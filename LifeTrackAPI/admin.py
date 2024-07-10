@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Day, Product, Meal
+from .models import Day, Product, Meal, MealProduct
 # Register your models here.
 
 class ProductAdmin(admin.ModelAdmin):
@@ -8,3 +8,4 @@ class ProductAdmin(admin.ModelAdmin):
 admin.site.register(Day)
 admin.site.register(Product)
 admin.site.register(Meal, ProductAdmin)
+admin.site.register(MealProduct)

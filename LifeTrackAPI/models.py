@@ -48,12 +48,21 @@ class Meal(models.Model):
 
     day = models.ForeignKey(Day, on_delete=models.CASCADE)
     meal_type = models.CharField(max_length=20, choices=MEAL_CHOICES, blank=False, null=False)
-    products = models.ManyToManyField(Product)
+    products = models.ManyToManyField(Product, through='MealProduct', related_name='meals')
 
     def __str__(self):
         return f"{self.meal_type}"
 
+class MealProduct(models.Model):
+    meal = models.ForeignKey(Meal, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    gramature = models.FloatField(default=100)  # Dodatkowe pole na gramaturę
 
+    class Meta:
+        unique_together = ('meal', 'product')  # Unikalna para meal i product
+
+    def __str__(self):
+        return f"{self.product.name} - {self.gramature}g"
 
 @receiver(post_save, sender=Day)
 def create_default_meals(sender, instance, created, **kwargs):

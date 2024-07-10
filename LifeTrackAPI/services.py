@@ -2,8 +2,11 @@ import requests
 from decouple import config
 from .models import Product
 from .serializers import ProductSerializer
+from django.shortcuts import get_object_or_404
+from django.http import Http404
 
 def fetch_from_api(api_query):
+   
     query = api_query
     api_url = config('FOOD_API_URL')+'={}'.format(query)
     response = requests.get(api_url, headers={'X-Api-Key': config('API_KEY')})
@@ -12,16 +15,22 @@ def fetch_from_api(api_query):
     else:
         print("Error:", response.status_code, response.text)
 
+
+
+    
+
 def get_or_create_product(product_name):
     try:
-        product = Product.objects.get(name=product_name)
+        product = get_object_or_404(Product,name=product_name)
         serialized_product = ProductSerializer(product)
         print("baza")
         return serialized_product.data
-    except Product.DoesNotExist:
+    except Http404:
         api_data = fetch_from_api(product_name)
+        
         if api_data:
-            api_product = api_data[0]  # Zakładamy, że dane są w pierwszym elemencie listy
+            api_product = api_data['items'][0]
+            
             product = Product.objects.create(
                 name=api_product['name'],
                 protein_per_100g=api_product['protein_g'],
@@ -30,5 +39,6 @@ def get_or_create_product(product_name):
                 calories_per_100g=api_product['calories']
             )
             print("api")
-            return product
+            serialized_product = ProductSerializer(product)
+            return serialized_product.data
         return None

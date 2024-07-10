@@ -3,28 +3,62 @@ from rest_framework import status
 from rest_framework.views import APIView
 from .services import get_or_create_product
 from rest_framework.response import Response
-from .serializers import ProductSerializer, DaySerializer, MealSerializer
-from .models import Product, Day, Meal
+from .serializers import ProductSerializer, DaySerializer, MealSerializer, MealProductsSerializer
+from .models import Product, Day, Meal, MealProduct
 from django.shortcuts import get_object_or_404
 from datetime import datetime, timedelta
+from django.http import Http404
 # Create your views here.
 
 class ProductView(APIView):
     
-   def get(self, request):
-        product_name = request.query_params.get('product_name')
-        
+    def get(self, request, product_name):
+            #product_name = request.query_params.get('product_name')
+            
+            if not product_name:
+                return Response({'error': 'Product name is required'}, status=status.HTTP_400_BAD_REQUEST)
+
+            try:
+                api_data = get_or_create_product(product_name)
+                print(api_data)
+                if not api_data:
+                    return Response({'error': 'Product not found in API'}, status=status.HTTP_404_NOT_FOUND)
+                serialized_data = ProductSerializer(api_data)
+                return Response(serialized_data.data, status=status.HTTP_200_OK)
+            except Exception as e:
+                return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+class AddProductView(APIView):
+
+    def post(self, request, product_name, mealID):
         if not product_name:
             return Response({'error': 'Product name is required'}, status=status.HTTP_400_BAD_REQUEST)
-
+        
+        if not mealID:
+            return Response({'error': 'Meal ID is required'}, status=status.HTTP_400_BAD_REQUEST)
+        
         try:
-            api_data = get_or_create_product(product_name)
-            if not api_data:
+            
+            product = get_or_create_product(product_name)
+            
+            if not product:
                 return Response({'error': 'Product not found in API'}, status=status.HTTP_404_NOT_FOUND)
-            serialized_data = ProductSerializer(api_data)
-            return Response(serialized_data.data, status=status.HTTP_200_OK)
+
+            try:
+                meal = get_object_or_404(Meal,id=mealID)
+                print(meal)
+            except Http404:
+                return Response({'error': 'Meal not found'}, status=status.HTTP_404_NOT_FOUND)
+
+            product = Product.objects.get(name=product['name'])
+
+            meal.products.add(product)
+            meal.save()
+
+            serialized_data = ProductSerializer(product)
+            return Response(serialized_data.data, status=status.HTTP_201_CREATED)
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+       
         
 class DayView(APIView):
     def get(self,request,id,format=None):
@@ -79,3 +113,33 @@ class Meals(APIView):
         meals = Meal.objects.filter(day_id=day_id)
         serialized_meals = MealSerializer(meals, many=True)
         return Response(serialized_meals.data, status=status.HTTP_200_OK)
+    
+class MealProducts(APIView):
+    def get(self, request, meal_id):
+        try:
+            meal = Meal.objects.get(id=meal_id)
+        except Meal.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        
+        meal_serializer = MealSerializer(meal)
+        return Response(meal_serializer.data)
+    
+class SaveGramatureView(APIView):
+    def post(self, request, product_id, meal_id):
+        print(product_id)
+        print(meal_id)
+        meal = get_object_or_404(Meal, pk=meal_id)
+        product = get_object_or_404(Product, pk=product_id)
+        gramature = request.data.get('gramature')
+        print(gramature)
+        # Check if MealProduct already exists, if yes, update gramature, else create new
+        meal_product, created = MealProduct.objects.get_or_create(meal=meal, product=product)
+        meal_product.gramature = gramature
+        meal_product.save()
+
+        return Response({'message': 'Gramature saved successfully'})
+        
+    def get(self,request,product_id,meal_id):
+        meal_products = MealProduct.objects.filter(meal_id=meal_id)
+        meal_products_serialized = MealProductsSerializer(meal_products, many=True)
+        return Response(meal_products_serialized.data)

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Day, Product, Meal
+from .models import Day, Product, Meal, MealProduct
 
 class DaySerializer(serializers.ModelSerializer):
     class Meta:
@@ -9,11 +9,16 @@ class DaySerializer(serializers.ModelSerializer):
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
-        fields = ('name', 'protein_per_100g', 'carbohydrates_per_100g', 'fat_per_100g', 'calories_per_100g')
+        fields = ('id','name', 'protein_per_100g', 'carbohydrates_per_100g', 'fat_per_100g', 'calories_per_100g')
 
 class MealSerializer(serializers.ModelSerializer):
     products = ProductSerializer(many=True, read_only=True)
 
     class Meta:
         model = Meal
+        fields = '__all__'
+
+class MealProductsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MealProduct
         fields = '__all__'
