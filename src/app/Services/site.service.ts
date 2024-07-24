@@ -91,4 +91,40 @@ export class SiteService {
 
     return this.http.get(`${this.api_url}graphs/${user_id}/`,{headers});
   }
+
+  AddBodyStatistic(data:any, user_id:number){
+    let user = this.auth.getUser();
+    
+    const headers = new HttpHeaders({
+      'Authorization': `Token ${user.token}`
+    });
+    
+    return this.http.post(`${this.api_url}graphs/${user_id}/`, data, {headers})
+
+  }
+
+  DeleteBodyStatistic(stat_ID:number){
+    let user = this.auth.getUser();
+  
+
+    const headers = new HttpHeaders({
+      'Authorization': `Token ${user.token}`
+    });
+    
+    return this.http.delete(`${this.api_url}stats/${stat_ID}/`, {headers})
+
+  }
+
+  ActualizeDays(date:string){
+    let user = this.auth.getUser();
+    
+
+    const headers = new HttpHeaders({
+      'Authorization': `Token ${user.token}`
+    });
+
+    return this.http.post(`${this.api_url}actualize/${date}/`, {}, {headers})
+
+
+  }
 }

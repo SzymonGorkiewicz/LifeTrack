@@ -1,12 +1,27 @@
+
+<div>
 <div *ngFor="let stat of body_stats; let i = index;">
     <input type="date" id="date" [ngModel]="stat.date">
     weight<input type="number" id="weight" [ngModel]="stat.weight">
     chest<input type="number" id="chest" [ngModel]="stat.chest_circ">
     waist<input type="number" id="waist" [ngModel]="stat.waist_circ">
+    <button (click)="DeleteStats(stat.id)">Delete</button>
 </div>
-<button (click)="ToogleGraph()">Generate graph</button>
+<button (click)="ToogleGraph()">ShowGraph</button>
+<button (click)="AddStatistic()">AddStats</button>
+</div>
+<div *ngIf="showaddStats">
+    <form id="addStatsForm" (ngSubmit)="onSubmit(form)" #form="ngForm">
+        <input type="date" id="addDate" name="addDate" ngModel required>
+        weight<input type="number" id="addWeight" name="addWeight" ngModel required>
+        chest<input type="number" id="addChest" name="addChest" ngModel required>
+        waist<input type="number" id="addWaist" name="addWaist" ngModel required>
+        <button type="submit">confirm</button>
+    </form>
+</div>
+
+<canvas id="myChartCanva" width="500" height="400"></canvas>
 
 
-<canvas id="myChartCanva" width="700px" height="600px"></canvas>
 
 <p>{{showgraph}}</p>

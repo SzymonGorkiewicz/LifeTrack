@@ -1,5 +1,4 @@
-<h1>LifeTrack</h1>
-<button (click)="Logout()">Logout</button>
+
 <div class="days-container">
     <div *ngFor="let day of days" class="day-wrapper">
         <div 
@@ -16,7 +15,7 @@
 </div>
 
 <div *ngIf="meals.length > 0">
-  <h2>Meals for the selected day:</h2>
+  
   <ul class="meal-list">
     <div 
       (click)="toggleMealClick(meal.id); meal.clicked = !meal.clicked" 
@@ -24,30 +23,41 @@
       class="meal-item" 
       *ngFor="let meal of meals"
     >
-      {{ meal.meal_type }} MealID{{meal.id}} DayID{{meal.day}}
+      {{ meal.meal_type }}
     </div>
   </ul>
 </div>
-<div *ngIf="meals.length === 0">
-  <p>No meals available for the selected day.</p>
-</div>
 
 
-<h2>Products for the selected meal:</h2>
+
+
 <ul *ngIf="mealClicked == true">
   <button (click)="AddProductToMeal(productInput.value, clickedMeal)">Add</button>
   <input type="text" id="addproduct" #productInput>
-  <div *ngFor="let product of mergedList; let i = index;" >
-    {{product.id}} - {{ product.name }} Protein: {{ (product.protein_per_100g * product.gramature / 100) | number:'1.2-2'}}  Carbohydrates: {{ (product.carbohydrates_per_100g * product.gramature / 100) | number:'1.2-2' }}  Fat: {{ (product.fat_per_100g * product.gramature / 100) | number:'1.2-2'}} Calories: {{ (product.calories_per_100g * product.gramature / 100)| number:'1.2-2'}}
-    <p>Gramature:<input type="number" [(ngModel)]="product.gramature"  (change)="saveGramature(product.id, product.gramature, clickedMeal)"></p>
-    <button (click)="DeleteProductFromMeal(product.id, clickedMeal)">Delete</button>
+  <div class ="layout-container">
+  <div>
+  <div class = "product-info" *ngFor="let product of mergedList; let i = index;" >
+    <p class="product-details">
+      <span>{{ product.name }}</span>
+      <span>Protein: {{ (product.protein_per_100g * product.gramature / 100) | number:'1.2-2' }}</span>
+      <span>Carbohydrates: {{ (product.carbohydrates_per_100g * product.gramature / 100) | number:'1.2-2' }}</span>
+      <span>Fat: {{ (product.fat_per_100g * product.gramature / 100) | number:'1.2-2' }}</span>
+      <span>Calories: {{ (product.calories_per_100g * product.gramature / 100) | number:'1.2-2' }}</span>
+    </p>
+    <p class="product-actions">
+      <span>Gramature:
+        <input type="number" [(ngModel)]="product.gramature" (change)="saveGramature(product.id, product.gramature, clickedMeal)">
+      </span>
+      <button (click)="DeleteProductFromMeal(product.id, clickedMeal)">Delete</button>
+    </p>
   </div>
-  <div><p>Total:  Protein: {{ calculateTotalNutrients().protein | number:'1.2-2' }},
+  </div>
+  <div class ="product-container"><p>Total:  Protein: {{ calculateTotalNutrients().protein | number:'1.2-2' }},
     Carbohydrates: {{ calculateTotalNutrients().carbohydrates | number:'1.2-2' }},
     Fat: {{ calculateTotalNutrients().fat | number:'1.2-2' }},
     Calories: {{ calculateTotalNutrients().calories | number:'1.2-2' }}</p>
+    <canvas id="myChartCanva" width="500" height="400"></canvas>
   </div>
-</ul>
-<div *ngIf="!mergedList || mergedList.length === 0">
-  <p>No products available for the selected meal.</p>
 </div>
+</ul>
+<p *ngIf="error_message!=null ">{{error_message}}</p>

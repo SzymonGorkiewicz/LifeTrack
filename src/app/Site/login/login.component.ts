@@ -18,7 +18,7 @@ export class LoginComponent {
   username: string = '';
   password: string = '';
   errorMessage: string = '';
-
+  successMessage: string='';
   constructor(private authService: AuthService,private router: Router) {}
   user : User = { token: '', user_id: 0 ,firstname: '', lastname:''};
   
@@ -36,13 +36,16 @@ export class LoginComponent {
       this.user.firstname = data.firstname;
       this.user.lastname = data.lastname;
 
-      this.errorMessage = 'Logged in succesfully!';
-
+      this.successMessage = 'Logged in succesfully!';
+      this.errorMessage = '';
       localStorage.setItem('user',JSON.stringify(this.user));
-      delay(1500);
-      this.router.navigate(['/homepage']);
+      setTimeout(() => {
+        this.router.navigate(['/homepage']);
+      }, 2000); 
+      
     },(error:any) =>{
       this.errorMessage = 'Invalid credentials!';
+      this.successMessage = '';
       console.error(this.errorMessage);
       
       form.reset();

@@ -11,6 +11,7 @@ import { delay } from 'rxjs';
 })
 export class RegisterComponent {
   errorMessage:string = ''
+  successMessage:string = ''
   constructor(private authService: AuthService,private router: Router) {}
   onSubmit(form: NgForm) {
     let data = {
@@ -20,18 +21,22 @@ export class RegisterComponent {
       "last_name": form.value.lastname,
       "email": form.value.email,
     };
-    console.log(data)
+    
     this.authService.register(data).subscribe((data:any)=>{
       
-      this.errorMessage = "registered succesfully"
+      this.successMessage = 'Registered successfully';
+      this.errorMessage = ''; 
       
-
-      this.router.navigate(['/login']);
+      setTimeout(() => {
+        this.router.navigate(['/login']);
+      }, 2000); 
+      
 
       
       
     },(error:any) =>{
       this.errorMessage = 'Fill all the fields';
+      this.successMessage = ''; 
       console.error(this.errorMessage);
       
       form.reset();

@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { AuthService } from '../../Services/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-navbar',
@@ -7,4 +9,24 @@ import { Component } from '@angular/core';
 })
 export class NavbarComponent {
 
+  constructor(private authservice: AuthService,private router: Router){}
+
+
+  Logout(){
+    this.authservice.Logout().subscribe((data:any) =>{
+      
+      localStorage.removeItem('user');
+      localStorage.removeItem('clickedDayId');
+      localStorage.removeItem('clickedMealId');
+     
+      this.router.navigate(['login']).then(() => {
+          location.reload();
+      });
+      
+    },(error:any)=>{
+      console.error(error);
+     
+      
+    })
+  }
 }

@@ -1,27 +1,22 @@
-<form id="login-form" class="form" (ngSubmit)="onSubmit(form)" #form="ngForm">
-    <div>
-        <label for="firstname">First Name:</label>
-        <input type="text" ngModel  name="firstname" id="firstname" class="form-control" required>
-      </div>
-      <div>
-        <label for="lastname">Last Name:</label>
-        <input type="text" ngModel  name="lastname" id="lastname"  required>
-      </div>
-      <div>
-        <label for="email">E-mail:</label>
-        <input type="email" ngModel  name="email" id="email" class="form-control" required>
-      </div>
-    <div>
-      <label for="username">Username:</label>
-      <input type="text" ngModel  name="username" id="username" class="form-control" required>
-    </div>
-    <div>
-      <label for="password">Password:</label>
-      <input type="password" ngModel  name="password" id="password"  required>
-    </div>
-    <a href="login">Already have account?</a>
-    <button type="submit">Register</button>
-  </form>
-  <div *ngIf="errorMessage">{{ errorMessage }}</div>
-  
-  
+
+
+<div class="register-page">
+  <div class="logo-container">
+    <h1 class = "logo">LifeTrack</h1>
+  </div>  
+  <div class="form">
+    <form class="login-form" (ngSubmit)="onSubmit(form)" #form="ngForm">
+      <input type="text" placeholder="first name" ngModel  name="firstname" id="firstname" class="form-control" required/>
+      <input type="text" placeholder="last name" ngModel  name="lastname" id="lastname"  required/>
+      <input type="email" placeholder="e-mail" ngModel  name="email" id="email" class="form-control" required/>
+      <input type="text" placeholder="username" ngModel  name="username" id="username" class="form-control" required/>
+      <input type="password" placeholder="password" ngModel  name="password" id="password"  required/>
+      
+      <button>Register</button>
+      <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
+      <div *ngIf="successMessage" class="success-message">{{ successMessage }}</div>
+      <p class="message">Already have account? <a href="login">Sign in</a></p>
+    </form>
+    
+  </div>
+</div>

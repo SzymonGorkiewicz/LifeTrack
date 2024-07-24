@@ -1,9 +1,15 @@
+
 .days-container {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
-    justify-content: center; /* Center align the days */
+    justify-content: center; 
+    padding: 20px;
+    background-color: #F8F8F8; 
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
+
 
 .day-wrapper {
     display: flex;
@@ -11,13 +17,14 @@
     justify-content: center;
 }
 
+
 .day-button {
     cursor: pointer;
-    width: 50px;
-    height: 50px;
-    background-color: #f0f0f0;
-    border: 1px solid #ccc;
-    border-radius: 50%; /* Make it a circle */
+    width: 60px;
+    height: 60px;
+    background-color: #E8F5E9; 
+    border: 2px solid #A5D6A7; 
+    border-radius: 50%; 
     display: flex;
     align-items: center;
     justify-content: center;
@@ -26,37 +33,217 @@
 }
 
 .day-button:hover {
-    background-color: #e0e0e0;
+    background-color: #C8E6C9; 
 }
 
 .day-button.clicked {
-    background-color: #add8e6; /* Change this color as needed */
+    background-color: #A5D6A7; 
 }
 
 .day-button p {
     margin: 0;
-    font-size: 14px; /* Adjust font size as needed */
+    font-size: 14px; 
+    color: #4CAF50; 
 }
 
+
+.meal-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    padding: 20px;
+    background-color: #F8F8F8; 
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Meal item */
 .meal-item {
     cursor: pointer;
-    padding: 10px;
+    padding: 10px 15px;
     margin: 5px;
-    border: 1px solid #ccc;
+    border: 2px solid #A5D6A7; 
+    border-radius: 10px; 
+    background-color: #E8F5E9; 
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.meal-item:hover {
+    background-color: #C8E6C9; 
+    transform: scale(1.05); 
+}
+
+.meal-item.clicked {
+    background-color: #A5D6A7; 
+    transform: scale(1.1); 
+}
+
+
+.products-container {
+    padding: 20px;
+    background-color: #F8F8F8; 
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.product-item {
+    padding: 10px 15px;
+    margin: 10px 0;
+    border: 2px solid #A5D6A7; 
+    border-radius: 10px; 
+    background-color: #E8F5E9; 
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background-color 0.3s ease;
+}
+
+.product-item:hover {
+    background-color: #C8E6C9; 
+}
+
+
+button {
+    padding: 10px 20px;
+    margin: 10px 0;
+    background-color: #4CAF50; 
+    color: white;
+    border: none;
     border-radius: 5px;
+    cursor: pointer;
+    font-family: 'Roboto', sans-serif; 
+    font-weight: bold; 
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+button:hover {
+    background-color: #388E3C; 
+    transform: scale(1.05); 
+}
+
+
+input[type="text"], input[type="number"] {
+    padding: 10px;
+    margin: 5px 0;
+    border: 2px solid #A5D6A7; 
+    border-radius: 5px;
+    background-color: #F8F8F8; 
+    transition: border-color 0.3s ease;
+}
+
+input[type="text"]:focus, input[type="number"]:focus {
+    border-color: #4CAF50; 
+}
+
+
+.error-message {
+    color: red;
+    font-weight: bold;
+}
+
+
+.total-summary {
+    padding: 20px;
+    margin-top: 20px;
+    background-color: #F8F8F8; 
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    font-weight: bold;
+    text-align: center;
+    color: #4CAF50; 
+}
+
+
+.chart-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+#myChartCanva {
+    max-width: 100%;
+    height: auto;
+}
+
+.product-container{
+    display: flex;
+    flex-direction: column;
+}
+
+.layout-container{
+    display: flex;
+    justify-content: center;
+    gap:25%;
+    flex-direction: row;
+}
+
+.product-info {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px;
+    margin: 10px 0;
+    border: 2px solid #A5D6A7; 
+    border-radius: 10px; 
+    background-color: #E8F5E9; 
     transition: background-color 0.3s ease;
   }
-.meal-item:hover {
-    background-color: #e0e0e0;
-}
-
-/* Styl dla zmiany koloru przy kliknięciu */
-.meal-item.clicked {
-background-color: #add8e6;
-}
-
-/* Wyświetlanie divów w rzędzie */
-.meal-list {
-display: flex;
-flex-wrap: wrap;
-}
+  
+  
+  .product-details {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: space-between;
+    margin: 0;
+    font-size: 14px; 
+  }
+  
+  
+  .product-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0;
+    font-size: 14px; 
+  }
+  
+  
+  input[type="number"] {
+    padding: 5px;
+    margin-left: 5px;
+    border: 2px solid #A5D6A7; 
+    border-radius: 5px;
+    background-color: #F8F8F8; 
+    transition: border-color 0.3s ease;
+  }
+  
+  input[type="number"]:focus {
+    border-color: #4CAF50; 
+  }
+  
+ 
+  button {
+    padding: 5px 10px;
+    background-color: #4CAF50; 
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: 'Roboto', sans-serif; 
+    font-weight: bold; 
+    transition: background-color 0.3s ease, transform 0.3s ease;
+  }
+  
+  button:hover {
+    background-color: #388E3C; 
+    transform: scale(1.05); 
+  }
+  
+  
+  .product-info:hover {
+    background-color: #C8E6C9; 
+  }
